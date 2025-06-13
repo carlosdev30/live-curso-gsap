@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP AirPods Pro</title>
+
+
+    <style>
+        body {
+            background: #222;
+            font-family: system-ui;
+            /* display: flex;
+            justify-content: center; */
+            padding: 1rem;
+        }
+
+        .box {
+            width: 75px;
+            height: 75px;
+            border-radius: 12px;
+            background: #09f;
+            margin-bottom: 4px;
+
+            &.purple {
+                background: rebeccapurple;
+            }
+
+            &.yellow {
+                background: yellow;
+            }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.4rem;
+
+            img {
+                aspect-ratio: 1/1;
+                width: 100%;
+            }
+        }
+
+        #log {
+            color: white;
+        }
+
+        h1 {
+            color: white;
+            text-wrap: balance;
+            text-align: center;
+        }
+
+        body {
+            height: 5000px;
+            width: 100vw;
+        }
+
+        h1 {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);  /*para que se centre*/
+            font-size: 12vw; /*13.9 */
+            width: 100%;
+        }
+
+        canvas {
+            position: fixed;
+            left: 50.5%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            aspect-ratio: 1440/780;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <h1 class="title">AirPods Pro Erin2</h1>
+    <canvas id="hero"></canvas>
+<!-- <h1 class="text">El código es poesía, pero también puede ser magia visual con GSAP</h1> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script> 
+    <!-- npm install gsap-->
+
+    <script>
+        // gsap
+        gsap.registerPlugin(SplitText)
+        gsap.registerPlugin(ScrollTrigger)
+
+        gsap.to(".title", {
+            scale: 1.5,
+            autoAlpha: 0,
+            scrollTrigger: {
+                //markers: true,
+                start: "center center",      // tambien 1500 (pixeles)
+                scrub: 0.5 //vincula el progreso de la animación con el scroll
+            }
+        })
+
+        const canvas = document.getElementById("hero")
+        const ctx = canvas.getContext("2d")
+
+        canvas.width = 1440
+        canvas.height = 810
+
+        const TOTAL_FRAMES = 65
+        
+        const createURL = (frame) => {
+            const id = frame.toString().padStart(4, "0")   // '0003'
+            return `https://www.apple.com/105/media/us/airpods-pro/2022/d2deeb8e-83eb-48ea-9721-f567cf0fffa8/anim/hero/large/${id}.png`
+
+            // return `https://www.apple.com/105/media/us/airpods-pro/2022/d2deeb8e-83eb-48ea-9721-f567cf0fffa8/anim/hero/small/${id}.jpg`
+
+            
+        }
+        
+        const images = Array.from({ length: TOTAL_FRAMES }, (_, i) => {
+            const img = new Image()
+            img.src = createURL(i)
+            //console.log(img.src)
+            return img
+        })
+
+        const airpods = {
+            frame: 0
+        }
+
+        gsap.to(airpods, {
+            frame: TOTAL_FRAMES - 1,
+            ease: "none",
+            snap: "frame",
+            scrollTrigger: {
+                scrub: 0.5
+            },                  
+            onUpdate: render  
+        })
+
+        images[0].onload = () => render()
+            //console.log("loaded")
+            
+        
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.drawImage(images[airpods.frame], 0, 0)
+        }
+        
+        // const splitText = new SplitText(".text", {
+        //     type: "words"        
+        // })
+
+        // gsap.from(splitText.words, {
+        //     duration: 1,
+        //     y: 10,          // estado inicial  (quiero q se mueva de abajo-> arriba)
+        //     stagger: 0.1,   // 10o ms por palabra
+        //     autoAlpha: 0,  // desde opacidad 0 hasta que se vea el texto
+        //     filter: "blur(10px)", // empieza teniendo blur y termina sin tenerlo
+        // })
+        // animación -> tween
+
+        // GSAP usa el método-> document.querySelectorAll (Array) 
+
+        //suavizados -> easing
+
+        
+        // repeatDelay: 1
+        // yoyo: true,
+
+        // gsap.to('.grid img', {
+
+        //     duration: 3,
+        //     scale: .9,
+        //     opacity: 0, 
+        //     stagger: {
+        //         each: 1,
+        //         repeat: -1,
+        //         yoyo: true,
+        //         grid: 'auto',
+        //         from: 'center'
+        //     }
+        // })
+    </script>
+</body>
+
+</html>
